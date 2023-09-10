@@ -80,9 +80,19 @@ class MainFragment : Fragment() {
                 val dialogSearchBinding =
                     DialogSearchBinding.inflate(LayoutInflater.from(requireContext()))
 
-                dialogSearchBinding.requireAll.setOnClickListener {
-                    dialogSearchBinding.requireAll.toggle()
-                }
+                val currentSearchParams = viewModel.searchParams.value
+
+                dialogSearchBinding.sliderThreshold.value =
+                    currentSearchParams.filterThreshold.toFloat()
+
+                dialogSearchBinding.sliderDensity.value =
+                    currentSearchParams.minimumDensity.toFloat()
+
+                dialogSearchBinding.sliderThreshold.setLabelFormatter(PercentageFormatter)
+                dialogSearchBinding.sliderDensity.setLabelFormatter(PercentageFormatter)
+
+                dialogSearchBinding.requireAll.isChecked =
+                    currentSearchParams.requireAll
 
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Search")
