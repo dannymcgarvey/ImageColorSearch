@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ImageColorSearch</string>
     <string name="thumbnail_content_desc">Image Thumbnail</string>
+    <string name="require_all_colors">Require All Colors</string>
+    <string name="search_menu_title">Search</string>
+    <string name="cancel_search_menu_title">Cancel Search</string>
 </resources>

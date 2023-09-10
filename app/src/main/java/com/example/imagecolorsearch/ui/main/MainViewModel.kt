@@ -1,6 +1,7 @@
 package com.example.imagecolorsearch.ui.main
 
 import android.app.Application
+import android.graphics.Color
 import android.util.Size
 import androidx.annotation.ColorInt
 import androidx.lifecycle.AndroidViewModel
@@ -11,7 +12,8 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.palette.graphics.Palette
 import com.example.imagecolorsearch.recycler.ThumbnailDataSource
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -24,36 +26,42 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         ThumbnailDataSource(application, thumbnailSize, pageSize)
     }.flow.cachedIn(viewModelScope)
 
-    var filter : List<Int> = listOf()
 
-    var filterThreshold = 0.5
+    val searchParams = MutableStateFlow(
+        SearchParams(
+            filter = listOf(Color.BLUE, Color.RED),
+            filterThreshold = 0.5,
+            minimumDensity = 0.2,
+            requireAll = false
+        )
+    )
 
-    var minimumDensity = 0.2
-
-    var requireAll = false
-
-    val filteredThumbnails = thumbnails.map { pagingData ->
-        if (filter.isEmpty()) {
-            return@map pagingData
+    val filteredThumbnails = thumbnails.combine(searchParams) { pagingData, params ->
+        if (params.filter.isEmpty()) {
+            return@combine pagingData
         }
-        return@map pagingData.filter { thumbnailData ->
+        return@combine pagingData.filter { thumbnailData ->
             thumbnailData.palette.swatches.any { thumbnailSwatch ->
-                if (requireAll) {
-                    filter.all { filterColor ->
-                        areColorsWithinThreshold(thumbnailSwatch.rgb, filterColor)
-                                && isSwatchWithinPopulationDensity(thumbnailSwatch)
+                if (params.requireAll) {
+                    params.filter.all { filterColor ->
+                        areColorsWithinThreshold(thumbnailSwatch.rgb, filterColor, params.filterThreshold)
+                                && isSwatchWithinPopulationDensity(thumbnailSwatch, params.minimumDensity)
                     }
                 } else {
-                    filter.any { filterColor ->
-                        areColorsWithinThreshold(thumbnailSwatch.rgb, filterColor)
-                                && isSwatchWithinPopulationDensity(thumbnailSwatch)
+                    params.filter.any { filterColor ->
+                        areColorsWithinThreshold(thumbnailSwatch.rgb, filterColor, params.filterThreshold)
+                                && isSwatchWithinPopulationDensity(thumbnailSwatch, params.minimumDensity)
                     }
                 }
             }
         }
     }
 
-    private fun areColorsWithinThreshold(@ColorInt color1: Int, @ColorInt color2: Int) : Boolean {
+    private fun areColorsWithinThreshold(
+        @ColorInt color1: Int,
+        @ColorInt color2: Int,
+        filterThreshold: Double
+    ) : Boolean {
         val r1 = (color1 and 0xFF0000) shr 16
         val g1 = (color1 and 0x00FF00) shr 8
         val b1 = color1 and 0x0000FF
@@ -64,7 +72,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return squareDistance.toDouble() / (255 * 255 * 3) < filterThreshold
     }
 
-    private fun isSwatchWithinPopulationDensity(swatch: Palette.Swatch) =
+    private fun isSwatchWithinPopulationDensity(swatch: Palette.Swatch, minimumDensity: Double) =
         swatch.population.toDouble() / (thumbnailSize.height * thumbnailSize.width) > minimumDensity
 
 }
