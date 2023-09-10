@@ -40,7 +40,7 @@ class MainFragment : Fragment() {
         adapter = BitmapAdapter()
         binding.thumbnailRecycler.adapter = adapter
         lifecycleScope.launch {
-            viewModel.thumbnails.collectLatest { pagingData ->
+            viewModel.filteredThumbnails.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
             }
         }
