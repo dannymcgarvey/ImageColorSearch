@@ -9,6 +9,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import androidx.paging.filter
+import androidx.palette.graphics.Palette
 import com.example.imagecolorsearch.recycler.ThumbnailData
 import com.example.imagecolorsearch.recycler.ThumbnailDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +45,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 params.filter.all { filterColor ->
                     isPopulationAboveMinimum(
                         getThumbnailColorPopulation(thumbnailData, filterColor, params),
+                        thumbnailData.palette,
                         params
                     )
                 }
@@ -52,15 +54,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     params.filter.fold(0) { acc, filterColor ->
                         acc + getThumbnailColorPopulation(thumbnailData, filterColor, params)
                     },
+                    thumbnailData.palette,
                     params
                 )
             }
         }
     }
 
-    private fun isPopulationAboveMinimum(population: Int, params: SearchParams) : Boolean {
-        val thumbnailPixelCount = thumbnailSize.height * thumbnailSize.width
-        return population.toDouble() > thumbnailPixelCount * params.minimumDensity
+    private fun isPopulationAboveMinimum(population: Int, palette: Palette, params: SearchParams) : Boolean {
+        val swatchPopulationCount = palette.swatches.fold(0) { acc, swatch ->
+            acc + swatch.population
+        }
+        return population.toDouble() > swatchPopulationCount * params.minimumDensity
     }
 
     private fun getThumbnailColorPopulation(

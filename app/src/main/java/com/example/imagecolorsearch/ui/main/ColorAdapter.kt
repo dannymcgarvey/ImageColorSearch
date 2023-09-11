@@ -31,17 +31,17 @@ class ColorAdapter(context: Context) : ArrayAdapter<Int>(context, 0, colorList) 
     }
 
     companion object {
-        private val colorList = listOf(
-            Color.RED,
-            Color.GREEN,
-            Color.BLUE,
-            Color.YELLOW,
-            Color.CYAN,
-            Color.MAGENTA,
-            Color.WHITE,
-            Color.GRAY,
-            Color.BLACK
-        )
+        private val colorList = listOf<Int>(
+            0xDD2222,
+            0x22DD22,
+            0x2222DD,
+            0xDDDD22,
+            0x22DDDD,
+            0xDD22DD,
+            0xDDDDDD,
+            0x888888,
+            0x222222
+        ).map { it or (0xFF shl 24) }
     }
 
 }
