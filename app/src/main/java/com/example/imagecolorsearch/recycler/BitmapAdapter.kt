@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.imagecolorsearch.databinding.HolderThumbnailBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.palette.graphics.Target
+import java.text.DateFormat
+import java.util.*
 
 class BitmapAdapter : PagingDataAdapter<ThumbnailData, ThumbnailHolder>(callback) {
 
@@ -22,14 +24,19 @@ class BitmapAdapter : PagingDataAdapter<ThumbnailData, ThumbnailHolder>(callback
         val item = getItem(position)
         holder.binding.thumbnail.setImageBitmap(item?.bitmap)
         holder.binding.thumbnail.setOnClickListener {
-            val palette = item?.palette ?: return@setOnClickListener
-            val builder = SpannableStringBuilder()
-            MaterialAlertDialogBuilder(holder.binding.root.context).setMessage(
+            val palette = (item ?: return@setOnClickListener).palette
+
+            val messageBuilder = SpannableStringBuilder(
+                 item.path + "\n\n"
+            )
+            MaterialAlertDialogBuilder(holder.binding.root.context)
+                .setTitle(DateFormat.getInstance().format(Date(item.dateCreated)))
+                .setMessage(
                 defaultTargets.mapNotNull { (target: Target, label: String) ->
                     palette[target]?.let {
                         makeColorString(it.rgb, label)
                     }
-                }.joinTo(builder, separator = "\n")
+                }.joinTo(messageBuilder, separator = "\n")
             )
                 .setPositiveButton(
                     palette.dominantSwatch?.rgb?.let {
