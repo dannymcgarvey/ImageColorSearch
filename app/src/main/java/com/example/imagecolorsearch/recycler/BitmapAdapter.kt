@@ -30,7 +30,7 @@ class BitmapAdapter : PagingDataAdapter<ThumbnailData, ThumbnailHolder>(callback
                  item.path + "\n\n"
             )
             MaterialAlertDialogBuilder(holder.binding.root.context)
-                .setTitle(DateFormat.getInstance().format(Date(item.dateCreated)))
+                .setTitle(DateFormat.getInstance().format(Date(item.dateCreated * 1000)))
                 .setMessage(
                 defaultTargets.mapNotNull { (target: Target, label: String) ->
                     palette[target]?.let {
