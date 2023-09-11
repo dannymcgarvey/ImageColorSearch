@@ -82,6 +82,12 @@ class MainFragment : Fragment() {
 
                 val currentSearchParams = viewModel.searchParams.value
 
+                val colorAdapter = ColorAdapter(requireContext()).apply {
+                    selectedColors.addAll(currentSearchParams.filter)
+                }
+
+                dialogSearchBinding.colorGrid.adapter = colorAdapter
+
                 dialogSearchBinding.sliderThreshold.value =
                     currentSearchParams.filterThreshold.toFloat()
 
@@ -95,12 +101,11 @@ class MainFragment : Fragment() {
                     currentSearchParams.requireAll
 
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Search")
                     .setView(dialogSearchBinding.root)
                     .setPositiveButton("Search") {_, _ ->
                         viewModel.searchParams.update {
                             SearchParams(
-                                it.filter, //TODO UI for setting filter
+                                colorAdapter.selectedColors.toList(),
                                 dialogSearchBinding.sliderThreshold.value.toDouble(),
                                 dialogSearchBinding.sliderDensity.value.toDouble(),
                                 dialogSearchBinding.requireAll.isChecked

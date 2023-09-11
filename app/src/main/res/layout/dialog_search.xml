@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
     android:orientation="vertical" >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/select_color"
+        />
+
+    <GridView
+        android:id="@+id/color_grid"
+        android:horizontalSpacing="6dp"
+        android:numColumns="3"
+        android:verticalSpacing="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/holder_color"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/filter_threshold"
-        android:layout_marginHorizontal="8dp"
         />
 
     <com.google.android.material.slider.Slider
@@ -24,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/population_density"
-        android:layout_marginHorizontal="8dp"
         />
 
     <com.google.android.material.slider.Slider

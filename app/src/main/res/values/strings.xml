@@ -4,6 +4,7 @@
     <string name="require_all_colors">Require All Colors</string>
     <string name="search_menu_title">Search</string>
     <string name="cancel_search_menu_title">Cancel Search</string>
-    <string name="population_density">Population Density</string>
+    <string name="population_density">Minimum Density</string>
     <string name="filter_threshold">Filter Threshold</string>
+    <string name="select_color">Select Color</string>
 </resources>
