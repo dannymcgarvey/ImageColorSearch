@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <integer-array name="search_colors">
+        <item>0xFFDD2222</item>
+        <item>0xFF22DD22</item>
+        <item>0xFF2222DD</item>
+        <item>0xFFDDDD22</item>
+        <item>0xFF22DDDD</item>
+        <item>0xFFDD22DD</item>
+        <item>0xFFDDDDDD</item>
+        <item>0xFF888888</item>
+        <item>0xFF222222</item>
+    </integer-array>
 </resources>

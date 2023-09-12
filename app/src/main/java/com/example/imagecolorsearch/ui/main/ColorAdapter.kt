@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import com.example.imagecolorsearch.R
 import com.example.imagecolorsearch.databinding.HolderColorBinding
 
-class ColorAdapter(context: Context) : ArrayAdapter<Int>(context, 0, colorList) {
+class ColorAdapter(context: Context) : ArrayAdapter<Int>(
+    context, 0, context.resources.getIntArray(R.array.search_colors).toTypedArray()
+) {
 
     val selectedColors = mutableSetOf<Int>()
 
@@ -28,20 +31,6 @@ class ColorAdapter(context: Context) : ArrayAdapter<Int>(context, 0, colorList) 
             }
         }
         return view
-    }
-
-    companion object {
-        private val colorList = listOf<Int>(
-            0xDD2222,
-            0x22DD22,
-            0x2222DD,
-            0xDDDD22,
-            0x22DDDD,
-            0xDD22DD,
-            0xDDDDDD,
-            0x888888,
-            0x222222
-        ).map { it or (0xFF shl 24) }
     }
 
 }
