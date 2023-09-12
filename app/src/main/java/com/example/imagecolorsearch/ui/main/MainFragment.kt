@@ -74,6 +74,7 @@ class MainFragment : Fragment() {
                         it.requireAll
                     )
                 }
+                requireActivity().invalidateOptionsMenu()
                 return true
             }
             R.id.app_bar_search -> {
@@ -111,6 +112,7 @@ class MainFragment : Fragment() {
                                 dialogSearchBinding.requireAll.isChecked
                             )
                         }
+                        requireActivity().invalidateOptionsMenu()
                     }
                     .setNegativeButton("Cancel") { _, _ -> }
                     .show()
