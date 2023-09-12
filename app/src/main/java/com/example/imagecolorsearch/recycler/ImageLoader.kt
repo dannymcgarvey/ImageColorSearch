@@ -17,7 +17,9 @@ class ImageLoader(context: Context, private val thumbnailSize: Size) {
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             arrayOf(
                 MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATE_ADDED,
+                MediaStore.Images.Media.VOLUME_NAME,
+                MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media.MIME_TYPE,
                 MediaStore.Images.Media.DATA
             ),
             null,
@@ -27,16 +29,20 @@ class ImageLoader(context: Context, private val thumbnailSize: Size) {
         val bitmaps = mutableListOf<ThumbnailData>()
         while (cursor.moveToNext()) {
             val idIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
-            val dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)
+            val volumeIndex = cursor.getColumnIndex(MediaStore.Images.Media.VOLUME_NAME)
+            val dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
+            val mimeTypeIndex = cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE)
             val dataIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
             val id = cursor.getLong(idIndex)
+            val volume = cursor.getString(volumeIndex)
             val date = cursor.getLong(dateIndex)
+            val mimeType = cursor.getString(mimeTypeIndex)
             val data = cursor.getString(dataIndex)
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
             try {
                 val bitmap = contentResolver.loadThumbnail(uri, thumbnailSize, null)
                 val palette = Palette.Builder(bitmap).generate()
-                bitmaps.add(ThumbnailData(id, date, data, palette, bitmap))
+                bitmaps.add(ThumbnailData(id, volume, date, mimeType, data, palette, bitmap))
             } catch (e: IOException) {
                 continue
             }
