@@ -18,6 +18,7 @@ class ImageLoader(context: Context, private val thumbnailSize: Size) {
             arrayOf(
                 MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.VOLUME_NAME,
+                MediaStore.Images.Media.DATE_ADDED,
                 MediaStore.Images.Media.DATE_TAKEN,
                 MediaStore.Images.Media.MIME_TYPE,
                 MediaStore.Images.Media.DATA
@@ -30,14 +31,21 @@ class ImageLoader(context: Context, private val thumbnailSize: Size) {
         while (cursor.moveToNext()) {
             val idIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID)
             val volumeIndex = cursor.getColumnIndex(MediaStore.Images.Media.VOLUME_NAME)
-            val dateIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
+            val dateAddedIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED)
+            val dateTakenIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN)
             val mimeTypeIndex = cursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE)
             val dataIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
             val id = cursor.getLong(idIndex)
             val volume = cursor.getString(volumeIndex)
-            val date = cursor.getLong(dateIndex)
+            val dateAdded = cursor.getLong(dateAddedIndex)
+            val dateTaken = cursor.getLong(dateTakenIndex)
             val mimeType = cursor.getString(mimeTypeIndex)
             val data = cursor.getString(dataIndex)
+            val date = if (dateTaken > 0) {
+                dateTaken
+            } else {
+                dateAdded * 1000
+            }
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
             try {
                 val bitmap = contentResolver.loadThumbnail(uri, thumbnailSize, null)
